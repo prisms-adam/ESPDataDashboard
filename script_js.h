@@ -8,9 +8,9 @@
  */
 
 const char script_js[] PROGMEM = R"rawliteral(
-let updateInterval = 1000;
+let updateInterval = 1000; // Update this value to change your sample rate in ms
 let sensors = [];
-let outputs = []; // New: Hardware outputs
+let outputs = [];
 let charts = {};
 let experimentData = [];
 let isRecording = false;

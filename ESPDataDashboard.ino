@@ -1,6 +1,7 @@
 /*
- * ESPDataDashboard.ino
- * --------------------
+ * ESPDataDashboard.ino v0.1
+ * -------------------------
+ * Created by: Adam Kemp, 2026
  * Description: Main entry point for the ESP8266 Data Dashboard. 
  * This file handles WiFi, NTP, and serves the Web API.
  * It now supports "Output Control" to trigger hardware (LEDs, Motors, etc.)
@@ -23,24 +24,52 @@
 #include "style_css.h"
 #include "script_js.h"
 
-// ==========================================
-// STUDENT TASK 1: CONFIGURE WIFI
-// ==========================================
-const char* ssid = "PRIS_Student";
-const char* password = "wearethebest1";
+/*  ==========================================
+*   STUDENT TASK 1: CONFIGURE WIFI & TIME
+*   ==========================================
+*   
+*   1) Update the ssid and password constants below
+*/
 
+const char* ssid = "PRIS_Student"; //Change this to your desired SSID
+const char* password = "wearethebest1"; //Change this to the password for the desired SSID
+
+// Time and web server configuration
+// NTP Server settings for time (Requires Internet connection on the WiFi)
 const char* ntpServer = "pool.ntp.org";
-const long  gmtOffset_sec = 0;
+const long  gmtOffset_sec = -14400; //Update to your current GMT offset
 const int   daylightOffset_sec = 0;
 
 ESP8266WebServer server(80);
 bool isRecording = false;
 
-// ==========================================
-// STUDENT TASK 2: SENSOR READING FUNCTIONS
-// ==========================================
-// Define functions here to read your specific sensors.
-// Each function must return a float.
+// Function to acquire and format date
+String getDateString() {
+  time_t now;
+  struct tm timeinfo;
+  if (!time(&now)) return "1970-01-01"; 
+  localtime_r(&now, &timeinfo);
+  char dateString[11];
+  sprintf(dateString, "%04d-%02d-%02d", timeinfo.tm_year + 1900, timeinfo.tm_mon + 1, timeinfo.tm_mday);
+  return String(dateString);
+}
+
+// Function to acquire and format time
+String getTimeString() {
+  time_t now; struct tm timeinfo;
+  if (!time(&now)) return "00:00:00";
+  localtime_r(&now, &timeinfo);
+  char buf[9]; sprintf(buf, "%02d:%02d:%02d", timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
+  return String(buf);
+}
+
+/* ========================================== 
+*  STUDENT TASK 2: SENSOR READING FUNCTIONS
+*  ==========================================
+*  
+*  1) Define functions here to read your specific sensors.
+*  2) Each function must return a float.
+*/
 
 float readAnalogA0() {
   return (float)analogRead(A0);
@@ -53,9 +82,15 @@ float readInternalTemp() {
     return 25.0 + (rand() % 100) / 10.0; 
 }
 
-// ==========================================
-// STUDENT TASK 3: REGISTER SENSORS
-// ==========================================
+/* ==========================================
+*  STUDENT TASK 3: REGISTER SENSORS
+*  ==========================================
+*  
+*  1) Review, edit, and add sensors below in the sensors[] array
+*  2) Make sure you have created sensor reading functions in Task 2! 
+*/
+
+// The following structure establishes the sensor config format
 struct Sensor {
   String id;
   String label;
@@ -63,6 +98,7 @@ struct Sensor {
   float (*readFunc)();
 };
 
+// Update the following array with each sensor's information
 Sensor sensors[] = {
   { "analog", "Analog Input", "Raw", readAnalogA0 },
   //{ "temp",   "Temperature",  "°C",  readInternalTemp } // Uncomment to add more
@@ -70,11 +106,15 @@ Sensor sensors[] = {
 
 const int sensorCount = sizeof(sensors) / sizeof(Sensor);
 
-// ==========================================
-// STUDENT TASK 4: REGISTER OUTPUTS
-// ==========================================
-// Format: { "unique_id", "Display Label", Pin_Number, On_Value, isPWM }
-// On_Value: For Digital, 1 = HIGH. For PWM, 0 to 1023.
+/* ==========================================
+*  STUDENT TASK 4: REGISTER OUTPUTS
+*  ==========================================
+*  
+*  1) Update the outputs[] arracy to contain your desired outputs. Use the following format as a guide:
+*     Format: { "unique_id", "Display Label", Pin_Number, On_Value, isPWM }
+*     On_Value: For Digital, 1 = HIGH. For PWM, 0 to 1023.
+*  
+*/
 
 struct Output {
   String id;
@@ -85,14 +125,15 @@ struct Output {
 };
 
 Output outputs[] = {
-  //{ "led", "LED (D0)", D0, 1, false }, // Digital Output on D5
+  //{ "led", "LED (D0)", D0, 1, false }, // Digital Output on D0
   //{ "fan", "Cooling Fan", D6, 512, true }   // PWM Output (50% speed) on D6
 };
 const int outputCount = sizeof(outputs) / sizeof(Output);
 
-// ==========================================
-// Hardware Control Logic
-// ==========================================
+/* ==========================================
+*  Hardware Control Logic
+*  ==========================================
+*/
 
 void applyOutputState(bool active) {
   for (int i = 0; i < outputCount; i++) {
@@ -105,9 +146,10 @@ void applyOutputState(bool active) {
   }
 }
 
-// ==========================================
-// Web Server Handlers
-// ==========================================
+/* ==========================================
+*  Web Server Handlers
+*  ========================================== 
+*/
 
 void handleRoot() { server.send(200, "text/html", index_html); }
 void handleCSS()  { server.send(200, "text/css", style_css); }
@@ -154,27 +196,10 @@ void handleStop() {
   server.send(200, "text/plain", "Stopped");
 }
 
-// ==========================================
-// Setup & Loop
-// ==========================================
-
-String getDateString() {
-  time_t now;
-  struct tm timeinfo;
-  if (!time(&now)) return "1970-01-01"; 
-  localtime_r(&now, &timeinfo);
-  char dateString[11];
-  sprintf(dateString, "%04d-%02d-%02d", timeinfo.tm_year + 1900, timeinfo.tm_mon + 1, timeinfo.tm_mday);
-  return String(dateString);
-}
-
-String getTimeString() {
-  time_t now; struct tm timeinfo;
-  if (!time(&now)) return "00:00:00";
-  localtime_r(&now, &timeinfo);
-  char buf[9]; sprintf(buf, "%02d:%02d:%02d", timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
-  return String(buf);
-}
+/* ==========================================
+*  Setup & Loop
+* ========================================== 
+*/
 
 void setup() {
   Serial.begin(115200);
