@@ -68,7 +68,9 @@ String getTimeString() {
 *  ==========================================
 *  
 *  1) Define functions here to read your specific sensors.
-*  2) Each function must return a float.
+*  2) I2C protocol on the ESP8266 uses the following pins: SDA (D1) and SCL (2)
+*  3) There is only one Analog Pin on the ESP8266: A0
+*  4) Each function must return a float.
 */
 
 float readAnalogA0() {
