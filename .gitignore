@@ -1,0 +1,10 @@
+# Arduino/ESP8266 build artifacts
+build/
+bin/
+*.elf
+*.bin
+*.hex
+
+# Local configuration
+.env
+.DS_Store
