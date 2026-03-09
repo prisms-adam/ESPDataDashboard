@@ -37,6 +37,10 @@ const char index_html[] PROGMEM = R"rawliteral(
         <div class="status-bar">
             Status: <span id="status-text">Ready</span> | Data Points: <span id="data-count">0</span>
         </div>
+        
+        <footer>
+            Created by Adam Kemp, 2026
+        </footer>
     </div>
 
     <script src="script.js"></script>

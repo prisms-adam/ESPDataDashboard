@@ -132,4 +132,12 @@ button:hover { opacity: 0.9; transform: translateY(-1px); }
 button:disabled { background-color: #ccc; cursor: not-allowed; }
 
 .status-bar { margin-top: 15px; font-size: 0.9rem; color: #666; }
+
+footer {
+  margin-top: 30px;
+  padding-top: 15px;
+  border-top: 1px solid #ddd;
+  font-size: 0.85rem;
+  color: #888;
+}
 )rawliteral";
