@@ -8,12 +8,20 @@
  * automatically when an experiment starts or stops.
  *
  * STUDENT TASKS:
- * 1. Configure WiFi (ssid and password).
- * 2. Define sensor reading functions (readAnalog, etc.).
- * 3. Register sensors in the 'sensors' array.
- * 4. Register outputs (LEDs, Motors) in the 'outputs' array.
- * 5. Adjust the GMT Offset if your time is incorrect.
+ * 1. 
+ * 2. Configure WiFi (ssid and password).
+ * 3. Define sensor reading functions (readAnalog, etc.).
+ * 4. Register sensors in the 'sensors' array.
+ * 5. Register outputs (LEDs, Motors) in the 'outputs' array.
  */
+ 
+/*  ==========================================
+*   STUDENT TASK 1: CONFIGURE YOUR LIBRARIES
+*   ==========================================
+*   
+*   1) Include the libraries you need and set up the necessary instances
+*/
+
 
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
@@ -25,7 +33,7 @@
 #include "script_js.h"
 
 /*  ==========================================
-*   STUDENT TASK 1: CONFIGURE WIFI & TIME
+*   STUDENT TASK 2: CONFIGURE WIFI & TIME
 *   ==========================================
 *   
 *   1) Update the ssid and password constants below
@@ -64,7 +72,7 @@ String getTimeString() {
 }
 
 /* ========================================== 
-*  STUDENT TASK 2: SENSOR READING FUNCTIONS
+*  STUDENT TASK 3: SENSOR READING FUNCTIONS
 *  ==========================================
 *  
 *  1) Define functions here to read your specific sensors.
@@ -85,7 +93,7 @@ float readInternalTemp() {
 }
 
 /* ==========================================
-*  STUDENT TASK 3: REGISTER SENSORS
+*  STUDENT TASK 4: REGISTER SENSORS
 *  ==========================================
 *  
 *  1) Review, edit, and add sensors below in the sensors[] array
@@ -109,7 +117,7 @@ Sensor sensors[] = {
 const int sensorCount = sizeof(sensors) / sizeof(Sensor);
 
 /* ==========================================
-*  STUDENT TASK 4: REGISTER OUTPUTS
+*  STUDENT TASK 5: REGISTER OUTPUTS
 *  ==========================================
 *  
 *  1) Update the outputs[] arracy to contain your desired outputs. Use the following format as a guide:
